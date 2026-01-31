@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moira.AI | GreekTTS-1.5</title>
+    <link rel="icon" type="image/svg+xml" href="./moira-favicon2.png" />
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #e1e5e9;
+            padding-bottom: 20px;
+        }
+        
+        :root {
+            --electric-blue: #0066ff;
+            --cyan: #00ffff;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .logo-moira {
+            color: #2c3e50;
+        }
+
+        .logo-ai {
+            background: linear-gradient(90deg, var(--electric-blue), var(--cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        
+        .title {
+            font-size: 2.2em;
+            margin: 20px 0 10px 0;
+            color: #24292f;
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            color: #586069;
+            margin-bottom: 20px;
+        }
+        
+        .links {
+            margin: 20px 0;
+        }
+        
+        .links a {
+            margin: 0 10px;
+            color: #0366d6;
+            text-decoration: none;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .team-link {
+            color: #0366d6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .team-link:hover {
+            text-decoration: underline;
+        }
+        
+        .abstract {
+            background-color: #f6f8fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 30px 0;
+            border-left: 4px solid #0366d6;
+        }
+        
+        .contents {
+            background-color: #f6f8fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 30px 0;
+        }
+        
+        .contents h3 {
+            margin-top: 0;
+            color: #24292f;
+        }
+        
+        .contents ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .contents li {
+            margin: 8px 0;
+        }
+        
+        .contents a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        
+        .contents a:hover {
+            text-decoration: underline;
+        }
+        
+        .section {
+            margin: 40px 0;
+        }
+        
+        .section h2 {
+            color: #24292f;
+            border-bottom: 1px solid #e1e5e9;
+            padding-bottom: 10px;
+        }
+        
+        .subsection {
+            margin-left: 20px;
+        }
+        
+        .subsection h4 {
+            color: #24292f;
+            margin-bottom: 10px;
+        }
+        
+        .dialogue-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .dialogue-table th,
+        .dialogue-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+            vertical-align: middle;
+        }
+        
+        .dialogue-table th {
+            background-color: #f6f8fa;
+            font-weight: 600;
+            color: #24292f;
+        }
+        
+        .dialogue-table tr:hover {
+            background-color: #f6f8fa;
+        }
+        
+        .audio-player {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .audio-player button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+        
+        .audio-player button:hover {
+            background-color: #f6f8fa;
+        }
+
+        /* --- NEW STYLE FOR LAST 2 ROWS --- */
+        .apple-audio-box {
+            background-color: #e0f2fe; /* Light Apple Blue */
+            border: 1px solid #bae6fd;
+            border-radius: 24px; /* Pill shape */
+            padding: 10px 15px;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0, 119, 237, 0.15); /* Soft Blue Shadow */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .apple-audio-box:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 119, 237, 0.2);
+        }
+
+        /* Adjusting the inner audio element to fit nicely */
+        .apple-audio-box audio {
+            height: 32px;
+            max-width: 200px;
+            display: block;
+            outline: none;
+        }
+        /* -------------------------------- */
+        
+        .timestamp {
+            color: #586069;
+            font-size: 0.9em;
+        }
+        
+        .emotion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .emotion-angry { background-color: #ffeaa7; color: #d73502; }
+        .emotion-apology { background-color: #e1f5fe; color: #0277bd; }
+        .emotion-concern { background-color: #f3e5f5; color: #7b1fa2; }
+        .emotion-happy { background-color: #e8f5e8; color: #2e7d32; }
+        .emotion-sad { background-color: #fce4ec; color: #c2185b; }
+        .emotion-surprised { background-color: #fff3e0; color: #f57c00; }
+        
+        .speaker-label {
+            font-weight: bold;
+            color: #24292f;
+        }
+        
+        @media (max-width: 768px) {
+            .dialogue-table {
+                font-size: 0.9em;
+            }
+            
+            .dialogue-table th,
+            .dialogue-table td {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><span class="logo-moira">MongolianTTS</span><span class="logo-ai">.AI</span></div>
+        <h1 class="title">MongolianTTS - v7</h1>
+        <div class="subtitle">Монгол хэлэнд зориулан тохируулсан Orpheus 3B.</div>
+        <div class="links">
+            <a href="https://huggingface.co/Dorjzodovsuren/orpheus_3b_Mongolia_v7" target="_blank">
+                <img src="https://img.shields.io/badge/HuggingFace-Model-blue?logo=huggingface" alt="HuggingFace Model" style="vertical-align: middle; height: 28px;">
+            </a>
+            <a href="https://huggingface.co/spaces/Dorjzodovsuren/Mongolian_TTS_Orpheus_3b" target="_blank">
+                <img src="https://img.shields.io/badge/HuggingFace-Model-blue?logo=huggingface" alt="HuggingFace Demo" style="vertical-align: middle; height: 28px;">
+            </a>
+        </div>
+    </div>
+
+    <div class="abstract">
+        <strong>Хураангуй.</strong> Энэхүү өгүүлэлд бид Монгол хэлний Text-to-Speech (TTS) системийн
+        хөгжлийн шинэ боломжуудыг харуулах зорилготой MongolianTTS загварыг танилцуулж байна.
+        Тус загвар нь бүрэн синтетик өгөгдөл дээр сургагдсан бөгөөд нээлттэй эхийн суурь загварууд,
+        мөн нээлттэй синтетик монгол хэлний өгөгдлийн сангуудыг ашигласан нь онцлог юм.
+        Монгол хэл зэрэг өгөгдөл харьцангуй хомс хэлнүүдийн хувьд TTS технологийн хөгжил
+        хязгаарлагдмал байсаар ирсэн. Үүнийг даван туулахын тулд бид энэхүү ажлаар дамжуулан
+        синтетик өгөгдөл ашиглах нь өндөр чанартай, уян хатан TTS систем хөгжүүлэх бодит
+        боломжтойг харуулж байна. MongolianTTS нь судалгаа, туршилт, цаашдын инновацид
+        нээлттэй суурь болж, Монгол хэлний ярианы технологийн экосистемийг өргөжүүлэхэд
+        чухал хувь нэмэр оруулах зорилготой юм.
+    </div>
+
+
+    <div class="section">
+        <h2 id="comparison">MongolianTTS vs Others</h2>
+        <p>Төрөл бүрийн систем дэх аудио sample харьцуулалт.</p>
+
+        <table class="dialogue-table">
+            <thead>
+                <tr>
+                    <th>Транскрипц</th>
+                    <th>MongolianTTS</th>
+                    <th>EdgeTTS</th>
+                    <th>ElevenLabs</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Хэнтий, Хангай, Соёны өндөр сайхан нуруунууд
+                        Хойд зүгийн чимэг болсон ой хөвч уулнууд, 
+                        Мэнэн, Шарга, Номины өргөн их говиуд
+                        Өмнө зүгийн манлай болсон элсэн манхан далайнууд
+                    </td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/3_MongolianTTS.wav" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/3_edge_tts.mp3" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/3_eleven.mp3" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Тухайлбал Хятадын хөгжлийн бодлогын чухал тулгуур нь хүн төвтэй, хүртээмжтэй нийгмийн хамгааллын тогтолцоо байгааг төлөөлөгчид онцоллоо. Өнөөдрийн байдлаар тус улс тэтгэвэр, эрүүл мэндийн даатгалын тогтолцоог бүрдүүлж, хүн амынхаа 95 хувиас дээш хэсгийг хамруулж чадсан байна.</td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/1_MongolianTTS.wav" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/1_edge_tts.mp3" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/1_eleven.mp3" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Гар утасны тухай мэдэх ёстой зүйл. Цахилгаан соронзон долгион гэхээр хүмүүс Наран дээр болдог шуургыг төсөөлдөг. Үнэндээ энэ бол бидний эргэн тойронд байгаль дээр оршиж байдаг, заримдаа идэвхэждэг долгион.</td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/2_MongolianTTS.wav" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/2_edge_tts.mp3" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                    <td>
+                        <audio controls style="max-width: 200px;">
+                            <source src="./audio/2_eleven.mp3" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Иргэдийн хувьд төлөвлөгөөт хязгаарлалтад бухимдалтай байгаагаас гадна хязгаарлалт нь урьдчилсан мэдэгдсэн цагаас өөр байгаа зэргээс шалтгаалан урьдчилан бэлтгэл хангах боломжгүй!!!</td>
+                    <td>
+                        <div class="apple-audio-box">
+                            <audio controls>
+                                <source src="./audio/4_MongolianTTS.wav" type="audio/mp3">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="apple-audio-box">
+                            <audio controls>
+                                <source src="./audio/4_edge_tts.mp3" type="audio/mp3">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="apple-audio-box">
+                            <audio controls>
+                                <source src="./audio/4_eleven.mp3" type="audio/mp3">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Тэрээр мэргэжлийн сүмогийн түүхэнд хамгийн олон удаа нэг ч өнжилгүй дараалан барилдсан бөхөөр тодорч, ийнхүү дэлхийн дээд амжилтын эзэн болсон байна.</td>
+                    <td>
+                        <div class="apple-audio-box">
+                            <audio controls>
+                                <source src="./audio/5_MongolianTTS.wav" type="audio/mp3">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="apple-audio-box">
+                            <audio controls>
+                                <source src="./audio/5_edge_tts.mp3" type="audio/mp3">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="apple-audio-box">
+                            <audio controls>
+                                <source src="./audio/5_eleven.mp3" type="audio/mp3">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Enhanced audio player functionality with HTML5 audio controls
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add loading indicators for audio elements
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.addEventListener('loadstart', function() {
+                    console.log('Loading audio:', this.src);
+                });
+
+                audio.addEventListener('canplaythrough', function() {
+                    console.log('Audio loaded successfully:', this.src);
+                });
+
+                audio.addEventListener('error', function() {
+                    console.error('Error loading audio:', this.src);
+                    // Show error message for failed audio loads
+                    // Fix: Check parent's sibling if wrapped in div, or next sibling if direct
+                    let fallback = this.nextElementSibling;
+                    if (!fallback && this.parentElement.classList.contains('apple-audio-box')) {
+                         // Logic adjusted because wrapping changes the DOM structure slightly, 
+                         // but text fallback is usually inside the audio tag anyway.
+                    }
+                    
+                    if (fallback && fallback.tagName === 'DIV') {
+                        fallback.style.display = 'block';
+                        fallback.innerHTML = '<p style="color: #d73502; font-size: 0.9em;">Audio file could not be loaded. Please check the file path.</p>';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
